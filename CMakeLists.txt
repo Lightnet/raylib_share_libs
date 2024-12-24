@@ -24,6 +24,8 @@ message(STATUS " === BUILD TYPE: ${CMAKE_BUILD_TYPE} === ")
 set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE) # don't build the supplied examples
 set(BUILD_GAMES    OFF CACHE BOOL "" FORCE) # don't build the supplied example games
 
+set(TEST_LIB "Main Test")
+
 # for share libaray 
 #set(BUILD_SHARED_LIBS ON)
 #option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
@@ -85,13 +87,15 @@ endif()
 #file(GLOB CORE_SRCS "src/*.h" "src/*.c") #not recommend cache and will fail if there no change.
 
 add_subdirectory(libs)
+message(STATUS "add_subdirectory LIBS :: ${TEST_LIB}")
 
+message(STATUS "FROM TOP 2 :: TEST_LIB :: >> ${TEST_LIB} ") #nope from top CMakeLists.txt
 
-set(GAMECODE_PATH "libs/gamecode")
-set(GAMECODE_SRCS
-   "${GAMECODE_PATH}/src/core.c"
-   "${GAMECODE_PATH}/include/core.h"
-)
+# set(GAMECODE_PATH "libs/gamecode")
+# set(GAMECODE_SRCS
+#    "${GAMECODE_PATH}/src/core.c"
+#    "${GAMECODE_PATH}/include/core.h"
+# )
 
 #install(TARGETS MyExe RUNTIME DESTINATION bin)
 
@@ -102,15 +106,19 @@ set(GAMECODE_SRCS
 # file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/core.h
 #      DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
+#add_library(gamecode STATIC ${GAMECODE_SRCS}) #share lib ???
+#target_include_directories(gamecode PUBLIC ${raylib_SOURCE_DIR}/src) # needed
+
 #add_library(gamecode SHARED src/core.c src/core.h)
 #add_library(gamecode SHARED ${GAMECODE_SRCS})
-add_library(gamecode STATIC ${GAMECODE_SRCS}) #share lib ???
+#add_library(gamecode STATIC ${GAMECODE_SRCS}) #share lib ???
 #add_library(gamecode MODULE  ${GAMECODE_SRCS}) # test fail
-target_include_directories(gamecode PUBLIC ${raylib_SOURCE_DIR}/src) # needed
+#target_include_directories(gamecode PUBLIC ${raylib_SOURCE_DIR}/src) # needed
 #target_include_directories(gamecode PUBLIC ${raygui_SOURCE_DIR}/src) 
 #target_link_libraries(gamecode PUBLIC raylib) # test
 #target_link_libraries(gamecode PRIVATE raylib) # test
 
+add_subdirectory(apps)
 
 #add custom target copy
 # add_custom_target(copy)
@@ -121,15 +129,17 @@ target_include_directories(gamecode PUBLIC ${raylib_SOURCE_DIR}/src) # needed
 #   COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/src/core.h ${CMAKE_CURRENT_SOURCE_DIR}/include/core.h #copy file
 # )
 
-set(SOURCES apps/main.c)
-set(APP_NAME raylibapp)
+
+
+# set(SOURCES apps/main.c)
+# set(APP_NAME raylibapp)
 
 # exe file
-add_executable(${APP_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/${SOURCES})
+# add_executable(${APP_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/${SOURCES})
 # copy header file 
 #add_dependencies(${APP_NAME} copy)
 #include dir header
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/${GAMECODE_PATH}/include") #lib share
+#include_directories("${CMAKE_CURRENT_SOURCE_DIR}/${GAMECODE_PATH}/include") #lib share
 # libs
-target_link_libraries(${APP_NAME} PRIVATE raylib)
-target_link_libraries(${APP_NAME} PRIVATE gamecode)
+# target_link_libraries(${APP_NAME} PRIVATE raylib)
+# target_link_libraries(${APP_NAME} PRIVATE gamecode)

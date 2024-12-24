@@ -13,7 +13,7 @@ void test_i(){
 void core_create_window(){
   printf("init window!\n");
   InitWindow(600, 480, "test");
-  printf("SET FPS\n");
+  printf(" === SET FPS === \n");
   //SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
 }
 

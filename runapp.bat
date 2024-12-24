@@ -2,5 +2,6 @@
 cd build
 cmake --build .
 cd ..
-"build/bin/Debug/raylibapp.exe"
+::"build/bin/Debug/raylibapp.exe"
+::pause
 ::pause
