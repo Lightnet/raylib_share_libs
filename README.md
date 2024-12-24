@@ -14,6 +14,9 @@
 # test build:
  Note I am just testing files loaded correct for dlls file.
 
+# Layout:
+  Need to better layout files structure for easy to read and better way to setup links.
+
 
 # build:
 build.bat

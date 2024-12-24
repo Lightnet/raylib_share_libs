@@ -78,14 +78,19 @@ endif()
 
 # This is the main part:
 #set(SOURCES rl_window.c)
-set(SOURCES main.c)
-set(APP_NAME raylibapp)
+# set(SOURCES main.c)
+# set(APP_NAME raylibapp)
 
 # share lib for hot reload
 #file(GLOB CORE_SRCS "src/*.h" "src/*.c") #not recommend cache and will fail if there no change.
-set(CORE_SRCS
-   "src/core.c"
-   "src/core.h"
+
+add_subdirectory(libs)
+
+
+set(GAMECODE_PATH "libs/gamecode")
+set(GAMECODE_SRCS
+   "${GAMECODE_PATH}/src/core.c"
+   "${GAMECODE_PATH}/include/core.h"
 )
 
 #install(TARGETS MyExe RUNTIME DESTINATION bin)
@@ -98,9 +103,9 @@ set(CORE_SRCS
 #      DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 #add_library(gamecode SHARED src/core.c src/core.h)
-#add_library(gamecode SHARED ${CORE_SRCS})
-add_library(gamecode STATIC ${CORE_SRCS}) #share lib ???
-#add_library(gamecode MODULE  ${CORE_SRCS}) # test fail
+#add_library(gamecode SHARED ${GAMECODE_SRCS})
+add_library(gamecode STATIC ${GAMECODE_SRCS}) #share lib ???
+#add_library(gamecode MODULE  ${GAMECODE_SRCS}) # test fail
 target_include_directories(gamecode PUBLIC ${raylib_SOURCE_DIR}/src) # needed
 #target_include_directories(gamecode PUBLIC ${raygui_SOURCE_DIR}/src) 
 #target_link_libraries(gamecode PUBLIC raylib) # test
@@ -108,20 +113,23 @@ target_include_directories(gamecode PUBLIC ${raylib_SOURCE_DIR}/src) # needed
 
 
 #add custom target copy
-add_custom_target(copy)
-add_custom_command(#ok
-  TARGET copy
-  POST_BUILD
-  COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_SOURCE_DIR}/include # create folder
-  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/src/core.h ${CMAKE_CURRENT_SOURCE_DIR}/include/core.h #copy file
-)
+# add_custom_target(copy)
+# add_custom_command(#ok
+#   TARGET copy
+#   POST_BUILD
+#   COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_SOURCE_DIR}/include # create folder
+#   COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/src/core.h ${CMAKE_CURRENT_SOURCE_DIR}/include/core.h #copy file
+# )
+
+set(SOURCES apps/main.c)
+set(APP_NAME raylibapp)
 
 # exe file
 add_executable(${APP_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/${SOURCES})
 # copy header file 
-add_dependencies(${APP_NAME} copy)
+#add_dependencies(${APP_NAME} copy)
 #include dir header
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/${GAMECODE_PATH}/include") #lib share
 # libs
 target_link_libraries(${APP_NAME} PRIVATE raylib)
 target_link_libraries(${APP_NAME} PRIVATE gamecode)
